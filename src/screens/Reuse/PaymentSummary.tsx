@@ -29,10 +29,7 @@ const PaymentSummary = () => {
     const navigation = useNavigation<any>();
 
     const handleOnRedirect = async (data: RedirectParams) => {
-        console.log("=======================")
-        console.log(data);
-        console.log("=======================")
-
+    
         if(data.status === 'successful'){
             //console.log("Payment Successful");
 
@@ -203,7 +200,10 @@ const PaymentSummary = () => {
                                 buttonColor={reuseTheme.colors.preference.red}
                                 textColor={reuseTheme.colors.preference.primaryText}
                                 // onPress={() => navigation.navigate('PaymentSummary', { item: params.item })}
-                                onPress={() => setIsVisible(false)}>
+                                onPress={() => {
+                                     setLoading(false);
+                                    setIsVisible(false)
+                                }}>
                                 Cancel
                             </Button>
                         </View>
@@ -398,6 +398,7 @@ const PaymentSummary = () => {
                         </Button>
                     </View>
                 </View>
+                
             </ScrollView>
         </SafeAreaView>
     );

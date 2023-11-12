@@ -5,10 +5,10 @@ import { RootState } from '../../redux/store/dev';
 import { ReuseTheme } from '../../types/types';
 import { useUserPreferredTheme } from '../../hooks/useUserPreferredTheme';
 import { useFirebase } from '../../hooks/useFirebase';
-import { limitDescription } from '../../utils/helpers/helpers';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import NotAvailable from '../../components/NotAvailable';
+import { PAYMENT_STATUS } from '../../utils/constants/constants';
 
 const Completed = () => {
     const { user } = useSelector((state: RootState) => state.user);
@@ -22,7 +22,7 @@ const Completed = () => {
 
     useEffect(() => {
         setLoading(true);
-        getPaymentsByUserIdAndStatus(user.UID, "COMPLETED").then((userpayments) => {
+        getPaymentsByUserIdAndStatus(user.UID, PAYMENT_STATUS.COMPLETED).then((userpayments) => {
             setPayments(userpayments)
         }).catch((error) => {
         })
@@ -45,20 +45,18 @@ const Completed = () => {
                         keyExtractor={item => String(item.id)}
                         renderItem={({ item, index }) => (
                             <Pressable style={styles.container} key={index}
-                                onPress={() => navigation.navigate('MyPaymentDetails', {
+                                onPress={() => navigation.navigate('PaymentDetails', {
                                     item
                                 })}
                             >
                                 <View>
                                     {/* icon */}
                                     <Image
-                                        source={{
-                                            uri: item?.coverImage,
-                                        }}
+                                        source={require("../../assets/images/reuse.png")}
                                         style={{
                                             width: 60,
                                             height: 60,
-                                            borderRadius: 10,
+                                            borderRadius: 20,
                                         }}
                                     />
                                 </View>
@@ -72,11 +70,10 @@ const Completed = () => {
                                     }}
                                 >
 
-                                    <Text style={styles.date}>{item?.title}</Text>
-                                    <Text style={styles.status}>{item?.estimatedPickUp}</Text>
-                                    <Text style={styles.date}>{limitDescription(item?.description, 15)}</Text>
-
-
+                                    <Text style={styles.date}>{item?.productName}</Text>
+                                    <Text style={styles.status}>{item?.paidTo}</Text>
+                                    <Text style={styles.status}>{item?.paymentMethod}</Text>
+                                    <Text style={styles.status}>{item?.status}</Text>
                                 </View>
                                 <View
                                     style={{
@@ -85,7 +82,7 @@ const Completed = () => {
                                 >
                                     {/* amount details */}
                                     <View>
-                                        <Text style={styles.status}>{item?.status}</Text>
+                                        <Text style={styles.status}>{item?.totalAmount}</Text>
                                     </View>
                                     {/* amoun details */}
                                 </View>
