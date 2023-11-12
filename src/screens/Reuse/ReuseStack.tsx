@@ -7,6 +7,7 @@ import ReuseTabs from './ReuseTabs';
 import MyProductDetails from './MyProductDetails';
 import { useUserPreferredTheme } from '../../hooks/useUserPreferredTheme';
 import PaymentSummary from './PaymentSummary';
+import DeliveryDetails from './DeliveryDetails';
 
 
 
@@ -79,6 +80,33 @@ function ReuseStack() {
                     ),
                 }}
             />
+
+            {/* delivery details */}
+            <Stack.Screen
+                name="DeliveryDetails"
+                component={DeliveryDetails}
+                options={{
+                    title: 'Delivery Details',
+                    headerStyle: {
+                        backgroundColor: reuseTheme.colors.preference.primaryBackground,
+                    },
+                    headerTitleStyle: {
+                        fontSize: 30,
+                    },
+                    headerTintColor: reuseTheme.colors.preference.primaryText,
+                    headerTitleAlign: 'center',
+                    headerLeft: () => (
+                        <IconButton
+                            icon="chevron-left"
+                            iconColor={reuseTheme.colors.preference.primaryText}
+                            size={28}
+                            onPress={() => navigation.navigate('ReuseTabs')}
+                            containerColor={reuseTheme.colors.preference.primaryForeground}
+                        />
+                    ),
+                }}
+            />
+            {/* delivery details */}
 
             <Stack.Screen
                 name="PaymentSummary"
