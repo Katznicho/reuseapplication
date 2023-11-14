@@ -12,13 +12,15 @@ import dynamicStyles from './styles'
 import TermsOfUseView from '../../../components/TermsOfUse'
 import { useUserPreferredTheme } from '../../../hooks/useUserPreferredTheme'
 import { config } from '../../../config/config'
-import { ProfilePictureSelector } from '../../../components/ProfilePictureSelector/ProfilePictureSelector'
 import { ActivityIndicator } from '../../../components/ActivityIndicator'
 import { dynamicGeneralStyles } from '../../../utils/generalstyles/dynamicGeneralStyles'
-import { SignupField } from '../../../types/types'
 import { useFirebase } from '../../../hooks/useFirebase'
 import { showMessage } from 'react-native-flash-message'
-import { APP_USERS } from '../../../utils/constants/constants'
+import { APP_USERS } from '../../../utils/constants/constants';
+import { WEB_CLIENT_ID } from '@env'
+
+
+
 
 
 const SignupScreen = ({ navigation }: any) => {
@@ -255,8 +257,11 @@ const SignupScreen = ({ navigation }: any) => {
         {/* login and register */}
 
         <Text style={generalStyles.authTitle}>{'Create Donnor Account'}</Text>
-        {/* <ProfilePictureSelector setProfilePictureFile={setProfilePictureFile} /> */}
+
         {renderSignupWithEmail()}
+
+        {/* google sign up */}
+        {/* google sign up */}
         {config.isSMSAuthEnabled && (
           <>
             <Text style={styles.orTextStyle}>{'OR'}</Text>

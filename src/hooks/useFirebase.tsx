@@ -3,6 +3,8 @@ import auth from '@react-native-firebase/auth';
 import { useDispatch } from 'react-redux';
 import { loginUser, logoutUser, registerUser, setAppIntro, updateAppIntro, updateIsLoggedIn, updateUserProfile } from '../redux/store/slices/UserSlice';
 import { APP_USERS, PAYMENT_STATUS, PRODUCT_COLLECTION } from '../utils/constants/constants';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { WEB_CLIENT_ID } from '@env';
 
 const USER_COLLECTION = "users";
 const CATEGORY_COLLECTION = "categories";
@@ -104,6 +106,52 @@ export const useFirebase = () => {
       return error;
     }
   }
+
+
+  const signUpWithGoogle = async () => {
+    GoogleSignin.configure({
+      webClientId: WEB_CLIENT_ID,
+      offlineAccess: true,
+      forceCodeForRefreshToken: true
+    })
+    try {
+      await GoogleSignin.hasPlayServices();
+      const { idToken } = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      const userCredentials = await auth().signInWithCredential(googleCredential);
+      const userUid = userCredentials.user.uid;
+      const userDoc = await firestore().collection(USER_COLLECTION).doc(userUid).get();
+      if (userDoc.exists) {
+        const user = userDoc.data();
+        dispatch(setAppIntro());
+        dispatch(loginUser({
+          UID: userUid,
+          fname: user?.firstName,
+          lname: user?.lastName,
+          email: user?.email,
+          username: user?.username,
+          community: user?.community,
+          isVerified: false,
+          phone: '',
+          displayPicture: '',
+          reuseType: ''
+        }))
+      }
+      // setState({ userInfo });
+    } catch (error: any) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // user cancelled the login flow
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (f.e. sign in) is in progress already
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+      } else {
+        // some other error happened
+      }
+    }
+  };
+
+  
 
   const login = async (email: string, password: string) => {
     try {
@@ -245,7 +293,7 @@ export const useFirebase = () => {
         updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
         rating: 4,
         userId: userId,
-        paymentStatus:PAYMENT_STATUS.UNPAID
+        paymentStatus: PAYMENT_STATUS.UNPAID
       });
     } catch (error) {
       console.log("Error updating user credentials:", error);
@@ -273,10 +321,11 @@ export const useFirebase = () => {
   };
 
   //update product payment status
-  const updateProductPaymentStatus = async (productId: string, status: string) => {
+  const updateProductPaymentStatus = async (productId: string, status: string, paymentId: string) => {
     try {
       await firestore().collection(PRODUCT_COLLECTION).doc(productId).update({
         paymentStatus: status,
+        paymentId: paymentId
       });
     } catch (error) {
       console.error('Error updating product payment status:', error);
@@ -480,7 +529,7 @@ export const useFirebase = () => {
   };
 
   //store the payment details
-  const storePaymentDetails = async (paymentDetails: any, transactionRef:string) => {
+  const storePaymentDetails = async (paymentDetails: any, transactionRef: string) => {
     try {
       await firestore().collection(PAYMENT_COLLECTION).doc(transactionRef).set({
         ...paymentDetails,

@@ -101,6 +101,9 @@ const CreateDonationProduct = () => {
         receiverCommunity: "",
         estimatedPickUp: "",
         status: "PENDING",
+        isDeliverySet: false,
+        paymentId:"",
+        paymnetStatus:""
 
     });
 

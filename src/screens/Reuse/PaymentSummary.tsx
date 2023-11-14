@@ -25,21 +25,21 @@ import { showMessage } from 'react-native-flash-message';
 
 const PaymentSummary = () => {
 
-    const { updateProductPaymentStatus, storePaymentDetails,updatePaymentStatus } = useFirebase();
+    const { updateProductPaymentStatus, storePaymentDetails, updatePaymentStatus } = useFirebase();
     const navigation = useNavigation<any>();
 
     const handleOnRedirect = async (data: RedirectParams) => {
-    
-        if(data.status === 'successful'){
+
+        if (data.status === 'successful') {
             //console.log("Payment Successful");
 
-             await updatePaymentStatus(data.tx_ref, PAYMENT_STATUS.COMPLETED);
+            await updatePaymentStatus(data.tx_ref, PAYMENT_STATUS.COMPLETED);
         }
-        else{
+        else {
             //console.log("Payment Cancelled");
             await updatePaymentStatus(data.tx_ref, PAYMENT_STATUS.COMPLETED);
         }
-        await updateProductPaymentStatus(params.item.id, PAYMENT_STATUS.COMPLETED);
+        await updateProductPaymentStatus(params.item.id, PAYMENT_STATUS.COMPLETED, data.tx_ref);
 
         showMessage({
             message: "Payment Successful",
@@ -61,7 +61,7 @@ const PaymentSummary = () => {
     const [selectedPaymentMethod, setSelectedPaymentMethod] =
         useState<string>('card');
 
-     const [transactionRef, setTransactionRef] = useState<string>(""); 
+    const [transactionRef, setTransactionRef] = useState<string>("");
 
     const handlePaymentMethodSelection = (method: React.SetStateAction<string>) => {
         setSelectedPaymentMethod(method);
@@ -76,40 +76,40 @@ const PaymentSummary = () => {
 
     useEffect(() => {
         setTransactionRef(generateTransactionRef(10));
-    },[])
+    }, [])
 
 
 
 
     const handlePayment = async () => {
-      
+
         try {
-            if(!transactionRef) return;
-            else{
+            if (!transactionRef) return;
+            else {
                 setLoading(true);
-                        //update product payment status
-           await updateProductPaymentStatus(params.item.id, PAYMENT_STATUS.PENDING);
-   
-           const paymentDeails = {
-               productName: params.item?.title,
-               totalAmount: params.item?.totalAmount,
-               status: PAYMENT_STATUS.PENDING,
-               paymentMethod: selectedPaymentMethod,
-               userId: params.item?.userId,
-               paidTo: "Reuse Team",
-               owner:params?.ownerDetails,
-               transactionRef: transactionRef
-           }
-   
-           await storePaymentDetails(paymentDeails, transactionRef);
-   
-           setIsVisible(true);
+                //update product payment status
+                await updateProductPaymentStatus(params.item.id, PAYMENT_STATUS.PENDING, transactionRef);
+
+                const paymentDeails = {
+                    productName: params.item?.title,
+                    totalAmount: params.item?.totalAmount,
+                    status: PAYMENT_STATUS.PENDING,
+                    paymentMethod: selectedPaymentMethod,
+                    userId: params.item?.userId,
+                    paidTo: "Reuse Team",
+                    owner: params?.ownerDetails,
+                    transactionRef: transactionRef
+                }
+
+                await storePaymentDetails(paymentDeails, transactionRef);
+
+                setIsVisible(true);
             }
-            
+
         } catch (error) {
             console.log(error);
         }
-         
+
     };
 
     return (
@@ -201,7 +201,7 @@ const PaymentSummary = () => {
                                 textColor={reuseTheme.colors.preference.primaryText}
                                 // onPress={() => navigation.navigate('PaymentSummary', { item: params.item })}
                                 onPress={() => {
-                                     setLoading(false);
+                                    setLoading(false);
                                     setIsVisible(false)
                                 }}>
                                 Cancel
@@ -214,42 +214,42 @@ const PaymentSummary = () => {
                                 currency="UGX"
                                 onRedirect={handleOnRedirect}
                                 options={{
-                                    tx_ref:transactionRef?? generateTransactionRef(10),
-                                    authorization:FLUTTER_WAVE_MERCHANT_KEY,
+                                    tx_ref: transactionRef ?? generateTransactionRef(10),
+                                    authorization: FLUTTER_WAVE_MERCHANT_KEY,
                                     customer: {
-                                        email:params?.ownerDetails?.email,
-                                        name:`${params?.ownerDetails?.firstName} ${params?.ownerDetails?.lastName}`,
-                                        phonenumber:params?.ownerDetails?.phoneNumber
-                                        
+                                        email: params?.ownerDetails?.email,
+                                        name: `${params?.ownerDetails?.firstName} ${params?.ownerDetails?.lastName}`,
+                                        phonenumber: params?.ownerDetails?.phoneNumber
+
                                     },
-                                    amount:parseInt(params.item?.totalAmount),
-                                    payment_options:selectedPaymentMethod,
+                                    amount: parseInt(params.item?.totalAmount),
+                                    payment_options: selectedPaymentMethod,
                                     customizations: {
                                         title: 'Reuse App Payments',
                                         description: `Payment for ${params.item?.title}  `,
                                         logo: 'https://reuse-f0081.web.app/static/media/reuse.b7e1ca16.png',
                                     }
                                 }}
-                            
+
                                 customButton={(props) => (
                                     <Button
-                                    mode="contained"
-                                    contentStyle={{
-                                        flexDirection: 'row-reverse',
-                                    }}
-                                    
-                                    style={{
-                                        marginHorizontal: 40,
-                                        marginVertical: 20,
-                                    }}
-                                    //  loading={true}
-                                    disabled={selectedPaymentMethod === '' || props.disabled}
-                                    buttonColor={reuseTheme.colors.preference.primaryForeground}
-                                    textColor={reuseTheme.colors.preference.primaryBackground}
-                                    // onPress={() => navigation.navigate('PaymentSummary', { item: params.item })}
-                                    onPress={props.onPress}>
-                                      pay
-                                </Button>
+                                        mode="contained"
+                                        contentStyle={{
+                                            flexDirection: 'row-reverse',
+                                        }}
+
+                                        style={{
+                                            marginHorizontal: 40,
+                                            marginVertical: 20,
+                                        }}
+                                        //  loading={true}
+                                        disabled={selectedPaymentMethod === '' || props.disabled}
+                                        buttonColor={reuseTheme.colors.preference.primaryForeground}
+                                        textColor={reuseTheme.colors.preference.primaryBackground}
+                                        // onPress={() => navigation.navigate('PaymentSummary', { item: params.item })}
+                                        onPress={props.onPress}>
+                                        pay
+                                    </Button>
                                 )}
                             />
                         </View>
@@ -388,8 +388,8 @@ const PaymentSummary = () => {
                                 marginHorizontal: 40,
                                 marginVertical: 20,
                             }}
-                             loading={loading}
-                             disabled={loading}
+                            loading={loading}
+                            disabled={loading}
                             buttonColor={reuseTheme.colors.preference.primaryForeground}
                             textColor={reuseTheme.colors.preference.primaryBackground}
                             // onPress={() => navigation.navigate('PaymentSummary', { item: params.item })}
@@ -398,7 +398,7 @@ const PaymentSummary = () => {
                         </Button>
                     </View>
                 </View>
-                
+
             </ScrollView>
         </SafeAreaView>
     );
