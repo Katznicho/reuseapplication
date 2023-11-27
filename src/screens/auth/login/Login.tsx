@@ -19,6 +19,7 @@ import { useDispatch } from 'react-redux';
 import { loginUser } from '../../../redux/store/slices/UserSlice';
 import { useFirebase } from '../../../hooks/useFirebase';
 import { showMessage } from 'react-native-flash-message';
+import { Alert } from 'react-native';
 
 //AIzaSyDnpNDu2bgT553XvYMntx5B0HD3fKzyD0A
 
@@ -26,16 +27,16 @@ import { showMessage } from 'react-native-flash-message';
 const Login = () => {
 
   const navigation = useNavigation<any>()
-  
-  const {login} = useFirebase()
 
-  const {reuseTheme} =  useUserPreferredTheme();
+  const { login, signUpWithGoogle } = useFirebase()
+
+  const { reuseTheme } = useUserPreferredTheme();
   const generalStyles = dynamicGeneralStyles(reuseTheme);
 
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-   const [errors , setErrors] = useState({email:"", password:""});
+  const [errors, setErrors] = useState({ email: "", password: "" });
   const styles = dynamicStyles(reuseTheme)
 
   const validateEmail = (email: string) => {
@@ -43,18 +44,18 @@ const Login = () => {
     return emailRegex.test(email);
   };
 
-  const onPressLogin = async() => {
-    if(email ==""){
+  const onPressLogin = async () => {
+    if (email == "") {
       setErrors(prevErrors => ({
         ...prevErrors,
-        email:"Email is required"
+        email: "Email is required"
       }));
       return;
     }
-    else{
+    else {
       setErrors(prevErrors => ({
         ...prevErrors,
-        email:""
+        email: ""
       }));
     }
     if (!validateEmail(email)) {
@@ -64,7 +65,7 @@ const Login = () => {
         email: 'Invalid email format',
       }));
       return;
-      
+
     } else {
       setErrors(prevErrors => ({
         ...prevErrors,
@@ -72,47 +73,47 @@ const Login = () => {
       }));
     }
 
-    if(password ==""){
+    if (password == "") {
       setErrors(prevErrors => ({
         ...prevErrors,
-        password:"Passsword is required"
+        password: "Passsword is required"
       }));
       return;
     }
-    else{
+    else {
       setErrors(prevErrors => ({
         ...prevErrors,
-        password:""
+        password: ""
       }));
     }
-    
-    try {
-        setLoading(true)
-       let res =  await login(email, password);
-        setLoading(false)
-        if(res?.user){
-          showMessage({
-            message:"Success",
-            type:"success",
-            autoHide:true,
-            duration:3000,
-            description:"Logged in successfully"
-          })
-        }
-        else{
-          showMessage({
-            message: "Error",
-            description: "Invalid email or password",
-            type: "danger",
-            autoHide: true,
-            duration: 3000,
-            icon: "danger"
-          })
-          return;
-        }
-        
 
-      
+    try {
+      setLoading(true)
+      let res = await login(email, password);
+      setLoading(false)
+      if (res?.user) {
+        showMessage({
+          message: "Success",
+          type: "success",
+          autoHide: true,
+          duration: 3000,
+          description: "Logged in successfully"
+        })
+      }
+      else {
+        showMessage({
+          message: "Error",
+          description: "Invalid email or password",
+          type: "danger",
+          autoHide: true,
+          duration: 3000,
+          icon: "danger"
+        })
+        return;
+      }
+
+
+
     } catch (error) {
       setLoading(false)
       showMessage({
@@ -126,20 +127,21 @@ const Login = () => {
     }
 
 
-    
-    
+
+
   }
 
   const onFBButtonPress = () => {
-       //dispatch(loginUser());
-  }
-
-  const onGoogleButtonPress = () => {
     //dispatch(loginUser());
   }
 
+  const onGoogleButtonPress = () => {
+
+    signUpWithGoogle()
+  }
+
   const onAppleButtonPress = async () => {
-    
+
   }
 
   const onForgotPassword = async () => {
@@ -155,40 +157,40 @@ const Login = () => {
       <KeyboardAwareScrollView
         style={{ flex: 1, width: '100%' }}
         keyboardShouldPersistTaps="always">
-          {/* login and register */}
-          {/* <Text style={styles.title}>{'Login'}</Text> */}
-          
-          {/* login and register */}
-          <View
-              style={[
-                generalStyles.flexStyles,
-                {
-                  alignItems: 'center',
-                },
-              ]}
-            >
-              <View
-                
-              >
-                <TouchableOpacity>
-                  <Text style={generalStyles.authTitle}>Login</Text>
-                </TouchableOpacity>
-                  <View style={generalStyles.bottomHairline} />
-                  
-              </View>
+        {/* login and register */}
+        {/* <Text style={styles.title}>{'Login'}</Text> */}
 
-              <View>
-                <TouchableOpacity
-                  onPress={() => {
-                   
-                    navigation.navigate('Register');
-                  }}
-                >
-                  <Text style={generalStyles.authTitle}>Register</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          {/* login and register */}
+        {/* login and register */}
+        <View
+          style={[
+            generalStyles.flexStyles,
+            {
+              alignItems: 'center',
+            },
+          ]}
+        >
+          <View
+
+          >
+            <TouchableOpacity>
+              <Text style={generalStyles.authTitle}>Login</Text>
+            </TouchableOpacity>
+            <View style={generalStyles.bottomHairline} />
+
+          </View>
+
+          <View>
+            <TouchableOpacity
+              onPress={() => {
+
+                navigation.navigate('Register');
+              }}
+            >
+              <Text style={generalStyles.authTitle}>Register</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        {/* login and register */}
 
         <TextInput
           style={styles.InputContainer}
@@ -200,9 +202,9 @@ const Login = () => {
           underlineColorAndroid="transparent"
           autoCapitalize="none"
         />
-         <View style={generalStyles.centerContent}>
+        <View style={generalStyles.centerContent}>
           {errors.email && <Text style={generalStyles.errorText}>{errors.email}</Text>}
-          </View>
+        </View>
 
         <TextInput
           style={styles.InputContainer}
@@ -214,53 +216,44 @@ const Login = () => {
           underlineColorAndroid="transparent"
           autoCapitalize="none"
         />
-          <View style={generalStyles.centerContent}>
+        <View style={generalStyles.centerContent}>
           {errors.password && <Text style={generalStyles.errorText}>{errors.password}</Text>}
-          </View>
-        
-          <View style={styles.forgotPasswordContainer}>
-            <TouchableOpacity onPress={() => onForgotPassword()}>
-              <Text style={styles.forgotPasswordText}>
-                {'Forgot password?'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        
+        </View>
+
+        <View style={styles.forgotPasswordContainer}>
+          <TouchableOpacity onPress={() => onForgotPassword()}>
+            <Text style={styles.forgotPasswordText}>
+              {'Forgot password?'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         <TouchableOpacity
           style={styles.loginContainer}
           onPress={() => onPressLogin()}>
           <Text style={styles.loginText}>{'Log In'}</Text>
         </TouchableOpacity>
-        
-          <>
-            <Text style={styles.orTextStyle}> {'OR'}</Text>
-            <TouchableOpacity
-              style={styles.facebookContainer}
-              onPress={() => onFBButtonPress()}>
-              <Text style={styles.facebookText}>
-                {'Login With Facebook'}
-              </Text>
-            </TouchableOpacity>
-          </>
-        
-        
-          <IMGoogleSignInButton
-            containerStyle={styles.googleButtonStyle}
-            onPress={onGoogleButtonPress}
-          />
-        
-        
+        <>
+          <Text style={styles.orTextStyle}> {'OR'}</Text>
+          <Text style={styles.facebookText}>
+            {'Login With Google'}
+          </Text>
+        </>
 
-        
-        
-          <TouchableOpacity
-            style={styles.phoneNumberContainer}
-            onPress={() => navigation.navigate('Sms', { isSigningUp: false })}>
-            <Text style={styles.phoneNumber}>
-              Login with phone number
-            </Text>
-          </TouchableOpacity>
-        
+
+        <IMGoogleSignInButton
+          containerStyle={styles.googleButtonStyle}
+          onPress={onGoogleButtonPress}
+        />
+
+        {/* <TouchableOpacity
+          style={styles.phoneNumberContainer}
+          onPress={() => navigation.navigate('Sms', { isSigningUp: false })}>
+          <Text style={styles.phoneNumber}>
+            Login with phone number
+          </Text>
+        </TouchableOpacity> */}
+
         {loading && <ActivityIndicator />}
       </KeyboardAwareScrollView>
     </View>

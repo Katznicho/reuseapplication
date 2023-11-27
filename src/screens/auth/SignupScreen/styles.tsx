@@ -5,10 +5,10 @@ const { height } = Dimensions.get('window')
 const imageSize = height * 0.232
 const photoIconSize = imageSize * 0.27
 
-const dynamicStyles = (theme:ReuseTheme) => {
-  
+const dynamicStyles = (theme: ReuseTheme) => {
+
   return StyleSheet.create({
-    
+
 
 
     content: {
@@ -129,6 +129,19 @@ const dynamicStyles = (theme:ReuseTheme) => {
       marginTop: Platform.OS === 'ios' ? 50 : 20,
       marginLeft: 10,
       transform: [{ scaleX: I18nManager.isRTL ? -1 : 1 }],
+    },
+    facebookText: {
+      color: '#ffffff',
+      fontSize: 14,
+      alignSelf: 'center',
+    },
+    googleButtonStyle: {
+      alignSelf: 'center',
+      marginTop: 15,
+      padding: 5,
+      elevation: 0,
+      backgroundColor: "white",
+      borderRadius: 25,
     },
   })
 }

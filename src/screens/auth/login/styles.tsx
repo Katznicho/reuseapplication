@@ -5,17 +5,17 @@ import { ReuseTheme } from '../../../types/types';
 
 
 
-const dynamicStyles = (theme:ReuseTheme) => {
-    
+const dynamicStyles = (theme: ReuseTheme) => {
+
   return StyleSheet.create({
-    
+
     orTextStyle: {
       color: theme.colors.preference.primaryText,
       marginTop: 40,
       marginBottom: 10,
       alignSelf: 'center',
     },
-    
+
     loginContainer: {
       width: '70%',
       backgroundColor: theme.colors.preference.primaryForeground,
@@ -60,6 +60,8 @@ const dynamicStyles = (theme:ReuseTheme) => {
       marginTop: 15,
       padding: 5,
       elevation: 0,
+      backgroundColor: "white",
+      borderRadius: 25,
     },
     appleButtonContainer: {
       width: '70%',
@@ -70,6 +72,7 @@ const dynamicStyles = (theme:ReuseTheme) => {
     facebookText: {
       color: '#ffffff',
       fontSize: 14,
+      alignSelf: 'center',
     },
     phoneNumberContainer: {
       alignItems: 'center',
@@ -98,8 +101,8 @@ const dynamicStyles = (theme:ReuseTheme) => {
       marginLeft: 10,
       transform: [{ scaleX: I18nManager.isRTL ? -1 : 1 }],
     },
-    
-  
+
+
   })
 }
 

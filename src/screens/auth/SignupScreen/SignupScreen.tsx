@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert
 } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import dynamicStyles from './styles'
@@ -17,7 +18,7 @@ import { dynamicGeneralStyles } from '../../../utils/generalstyles/dynamicGenera
 import { useFirebase } from '../../../hooks/useFirebase'
 import { showMessage } from 'react-native-flash-message'
 import { APP_USERS } from '../../../utils/constants/constants';
-import { WEB_CLIENT_ID } from '@env'
+import IMGoogleSignInButton from '../../../components/IMGoogleSignInButton/IMGoogleSignInButton'
 
 
 
@@ -26,7 +27,7 @@ import { WEB_CLIENT_ID } from '@env'
 const SignupScreen = ({ navigation }: any) => {
 
   const { reuseTheme } = useUserPreferredTheme();
-  const { register } = useFirebase();
+  const { register, signUpWithGoogle } = useFirebase();
 
   const styles = dynamicStyles(reuseTheme)
   const generalStyles = dynamicGeneralStyles(reuseTheme);
@@ -162,6 +163,12 @@ const SignupScreen = ({ navigation }: any) => {
     }))
   }
 
+  const onGoogleButtonPress = () => {
+    //dispatch(loginUser());
+    // Alert.alert("Not implemented yet");
+    signUpWithGoogle()
+  }
+
   const renderInputField = (field: any, index: any) => {
     return (
       <View key={index}>
@@ -261,6 +268,17 @@ const SignupScreen = ({ navigation }: any) => {
         {renderSignupWithEmail()}
 
         {/* google sign up */}
+        <Text style={styles.orTextStyle}> {'OR'}</Text>
+        <Text style={styles.facebookText}>
+          {'Register With Google'}
+        </Text>
+
+
+
+        <IMGoogleSignInButton
+          containerStyle={styles.googleButtonStyle}
+          onPress={onGoogleButtonPress}
+        />
         {/* google sign up */}
         {config.isSMSAuthEnabled && (
           <>
@@ -279,7 +297,7 @@ const SignupScreen = ({ navigation }: any) => {
         />
       </KeyboardAwareScrollView>
       {loading && <ActivityIndicator />}
-    </View>
+    </View >
   )
 }
 

@@ -110,8 +110,8 @@ export const useFirebase = () => {
 
   const signUpWithGoogle = async () => {
     GoogleSignin.configure({
-      webClientId: WEB_CLIENT_ID,
-      offlineAccess: true,
+      webClientId: "51604544208-6on9b4pi6cir1intl430m18u6v70ije6.apps.googleusercontent.com",
+      // offlineAccess: true,
       forceCodeForRefreshToken: true
     })
     try {
@@ -121,6 +121,10 @@ export const useFirebase = () => {
       const userCredentials = await auth().signInWithCredential(googleCredential);
       const userUid = userCredentials.user.uid;
       const userDoc = await firestore().collection(USER_COLLECTION).doc(userUid).get();
+      console.log("=======================================")
+      console.log(userDoc)
+      console.log("=======================================")
+
       if (userDoc.exists) {
         const user = userDoc.data();
         dispatch(setAppIntro());
@@ -151,7 +155,7 @@ export const useFirebase = () => {
     }
   };
 
-  
+
 
   const login = async (email: string, password: string) => {
     try {
@@ -664,8 +668,9 @@ export const useFirebase = () => {
     getPaymentsByUserIdAndStatus,
     updateProductPaymentStatus,
     storePaymentDetails,
-    updatePaymentStatus
+    updatePaymentStatus,
     //notifications
+    signUpWithGoogle
 
     // Export other auth functions here if needed
   };
