@@ -19,6 +19,7 @@ import NotAvailable from '../../components/NotAvailable';
 import { useNavigation } from '@react-navigation/native';
 import { Button } from 'react-native-paper';
 import { limitDescription } from '../../utils/helpers/helpers';
+import { dynamicGeneralStyles } from '../../utils/generalstyles/dynamicGeneralStyles';
 
 //https://wix.github.io/react-native-ui-lib/docs/components/overlays/FeatureHighlight
 //tamagui
@@ -28,6 +29,8 @@ const Accepted = () => {
     const { getProductsByUserIdAndStatus } = useFirebase();
     const [products, setProducts] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+
+
 
     const navigation = useNavigation<any>();
 
@@ -45,6 +48,7 @@ const Accepted = () => {
 
     const { reuseTheme } = useUserPreferredTheme();
     const styles = productStyles(reuseTheme);
+    const generalstyles = dynamicGeneralStyles(reuseTheme);
 
     if (loading) return <SafeAreaView style={{ flex: 1, backgroundColor: reuseTheme.colors.preference.primaryBackground }}>
         <ActivityIndicator />
@@ -126,9 +130,13 @@ const Accepted = () => {
                     />
 
                     :
-                    <View >
+                    <View style={[generalstyles.centerContent]}>
                         <NotAvailable
                             text={"You dont have any products currenlty"}
+                            containerStyles={{
+                                marginHorizontal: 10,
+                                marginVertical: 10,
+                            }}
                         />
                         <View>
                             <Button

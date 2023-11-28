@@ -3,11 +3,11 @@ import React from 'react'
 import { useUserPreferredTheme } from '../hooks/useUserPreferredTheme';
 import { ReuseTheme } from '../types/types';
 
-const NotAvailable = ({text}:any) => {
+const NotAvailable = ({text, containerStyles={}}:any) => {
     const {reuseTheme} =  useUserPreferredTheme();
     const styles = notAvailableStyles(reuseTheme);
   return (
-    <View style={[styles.descriptionStyles]}>
+    <View style={[styles.descriptionStyles, containerStyles]}>
     <Text style={{ color:reuseTheme.colors.preference.primaryText }}>
        {text}
     </Text>

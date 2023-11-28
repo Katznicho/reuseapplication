@@ -27,7 +27,7 @@ import IMGoogleSignInButton from '../../../components/IMGoogleSignInButton/IMGoo
 const SignupScreen = ({ navigation }: any) => {
 
   const { reuseTheme } = useUserPreferredTheme();
-  const { register, signUpWithGoogle } = useFirebase();
+  const { register, registerUserWithGoogle } = useFirebase();
 
   const styles = dynamicStyles(reuseTheme)
   const generalStyles = dynamicGeneralStyles(reuseTheme);
@@ -163,10 +163,12 @@ const SignupScreen = ({ navigation }: any) => {
     }))
   }
 
-  const onGoogleButtonPress = () => {
+  const onGoogleButtonPress = async () => {
     //dispatch(loginUser());
     // Alert.alert("Not implemented yet");
-    signUpWithGoogle()
+    //signUpWithGoogle()
+    await registerUserWithGoogle(APP_USERS.DONOR)
+
   }
 
   const renderInputField = (field: any, index: any) => {

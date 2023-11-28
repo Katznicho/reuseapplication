@@ -17,6 +17,8 @@ const notificationStatus = {
   READ: 'read',
 }
 
+
+
 export const useFirebase = () => {
   const dispatch = useDispatch<any>();
 
@@ -114,6 +116,7 @@ export const useFirebase = () => {
       // offlineAccess: true,
       forceCodeForRefreshToken: true
     })
+
     try {
       await GoogleSignin.hasPlayServices();
       const { idToken } = await GoogleSignin.signIn();
@@ -154,6 +157,64 @@ export const useFirebase = () => {
       }
     }
   };
+
+  const registerUserWithGoogle = async (userType: String) => {
+    GoogleSignin.configure({
+      webClientId: "51604544208-6on9b4pi6cir1intl430m18u6v70ije6.apps.googleusercontent.com",
+      // offlineAccess: true,
+      forceCodeForRefreshToken: true
+    })
+    try {
+      const { idToken } = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      const userCredentials = await auth().signInWithCredential(googleCredential);
+      const userUid = userCredentials.user.uid;
+
+      if (userType == APP_USERS.RECEIVER) {
+        await firestore().collection(USER_COLLECTION).doc(userUid).set({
+          email: userCredentials.user.email,
+          username: userCredentials.user.displayName,
+          userType: userType,
+          communityName: "",
+          firstName: userCredentials?.user?.displayName?.split(" ")[0],
+          lastName: userCredentials?.user?.displayName?.split(" ")[1],
+          phone:userCredentials.user.phoneNumber,
+          displayPicture:userCredentials.user.photoURL,
+          reuseType:userType
+        });
+      }
+      else {
+        await firestore().collection(USER_COLLECTION).doc(userUid).set({
+          email: userCredentials.user.email,
+          username: userCredentials.user.displayName,
+          userType: userType,
+          firstName: userCredentials?.user?.displayName?.split(" ")[0],
+          lastName: userCredentials?.user?.displayName?.split(" ")[1],
+          community: "",
+          phone:userCredentials.user.phoneNumber,
+          displayPicture:userCredentials.user.photoURL,
+          reuseType:userType
+        });
+      }
+
+      console.log("==============registered user=========================")
+      console.log(userCredentials)
+      console.log("==============registered user=========================")
+
+      // setState({ userInfo });
+    } catch (error: any) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // user cancelled the login flow
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (f.e. sign in) is in progress already
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+      } else {
+        // some other error happened
+      }
+    }
+
+  }
 
 
 
@@ -670,7 +731,9 @@ export const useFirebase = () => {
     storePaymentDetails,
     updatePaymentStatus,
     //notifications
-    signUpWithGoogle
+    signUpWithGoogle,
+    registerUserWithGoogle
+
 
     // Export other auth functions here if needed
   };

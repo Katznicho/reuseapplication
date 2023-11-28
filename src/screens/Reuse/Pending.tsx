@@ -19,6 +19,7 @@ import NotAvailable from '../../components/NotAvailable';
 import { useNavigation } from '@react-navigation/native';
 import { Button } from 'react-native-paper';
 import { limitDescription } from '../../utils/helpers/helpers';
+import { dynamicGeneralStyles } from '../../utils/generalstyles/dynamicGeneralStyles';
 
 //https://wix.github.io/react-native-ui-lib/docs/components/overlays/FeatureHighlight
 //tamagui
@@ -28,6 +29,10 @@ const Pending = () => {
     const { getProductsByUserIdAndStatus } = useFirebase();
     const [products, setProducts] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+
+    const { reuseTheme } = useUserPreferredTheme();
+    const styles = productStyles(reuseTheme);
+    const generalstyles = dynamicGeneralStyles(reuseTheme);
 
     const navigation = useNavigation<any>();
 
@@ -43,8 +48,7 @@ const Pending = () => {
         setLoading(false);
     }, [user?.UID]);
 
-    const { reuseTheme } = useUserPreferredTheme();
-    const styles = productStyles(reuseTheme);
+
 
 
     // if(loading) return <ActivityIndicator/>
@@ -127,9 +131,13 @@ const Pending = () => {
                     />
 
                     :
-                    <View >
+                    <View style={[generalstyles.centerContent]} >
                         <NotAvailable
                             text={"You dont have any products pending  approval currently"}
+                            containerStyles={{
+                                marginHorizontal: 10,
+                                marginVertical: 10,
+                            }}
                         />
                         <View>
                             <Button

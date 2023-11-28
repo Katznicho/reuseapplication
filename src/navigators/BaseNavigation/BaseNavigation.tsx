@@ -19,7 +19,8 @@ export default function BaseNavigation() {
   const { isLoggedIn, guestUser, appIntro } = useSelector((state: RootState) => state.user);
   useEffect(() => { }, [guestUser, isLoggedIn])
 
-  return appIntro ? (<Drawer.Navigator
+  return appIntro ? 
+  (<Drawer.Navigator
     initialRouteName="HomeDrawer"
     screenOptions={{
       headerShown: false,
